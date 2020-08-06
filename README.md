@@ -63,4 +63,6 @@ So what started as an idea quickly turned into a script being passed back and fo
 
 More are welcome. No bash. Less is more.  
 
-Join us in **irc.nebulacentre.net** [channel **#general**] or **hlirc.haydenvh.com** [channel **#quik**]
+Join us in:  
+- **irc.nebulacentre.net** [channel *#general*]
+- **hlirc.haydenvh.com** [channel *#quik*]
