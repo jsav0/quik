@@ -33,6 +33,10 @@ quik deploy 1gb ~/.ssh/id_ed25519.pub 1
 ssh void@ip
 ```
 
+![watch it deploy 1 instance](http://wfnintr.net/images/quikdemo-1.gif)
+![watch it deploy 10 instances](http://wfnintr.net/images/quikdemo-10.gif)
+
+
 ---
 
 |other commands|description|
