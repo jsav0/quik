@@ -1,7 +1,7 @@
 # quik - mispelt script for deploying vps' quikly
 
 #### Digital Ocean API Key
-To obtain a Digital Ocean API Key, you can sign up with my [referral link](https://m.do.co/c/c5ace8d7755e). 
+To obtain a Digital Ocean API Key, you can sign up with my [referral link](https://m.do.co/c/c5ace8d7755e) (You get a free $100 credit). 
 
 ## Download:
 source is NOT hosted on github. git it from here
