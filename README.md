@@ -25,7 +25,7 @@ quik list 1 1 1
 quik deploy 1gb ~/.ssh/id_ed25519.pub 1
 
 # deploy 10 instances
-quik deploy 1gb ~/.ssh/id_ed25519.pub 10
+quik deploy 1gb ~/.ssh/id_ed25519.pub 1
 ```
 
 **3. That's it.** Login to the running instances with  
@@ -44,8 +44,16 @@ ssh void@ip
 
 # TODO:
 - There is a lot to do.
-I have intentions to build quik out with predefined drist playbooks for certain types of environments.  
+- add self expiry option
 
+I have intentions to build quik out with predefined drist playbooks for certain types of environments. So in that regard,  
+- playbooks for the following purposes:
+	- .onion generator (wfnintr/mkonions)
+	- tor relay (wfnintr/tor-bridge)
+	- offensive hacking (wfnintr/darkvoid)
+	- wireguard (wfnintr/wireguard-scripts)
+	- irc bots and daemons , (coming soon)
+	- more
 ---
 
 # About and Contributors 
