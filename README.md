@@ -25,7 +25,7 @@ quik list 1 1 1
 quik deploy 1gb ~/.ssh/id_ed25519.pub 1
 
 # deploy 10 instances
-quik deploy 1gb ~/.ssh/id_ed25519.pub 1
+quik deploy 1gb ~/.ssh/id_ed25519.pub 10
 ```
 
 **3. That's it.** Login to the running instances with  
