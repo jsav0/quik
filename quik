@@ -1,0 +1,200 @@
+#!/bin/sh
+#
+# quik - mispelt script for deploying vps' quikly
+
+# Copyright (c) 2020 haydenh (gopher://haydenvh.com)
+# Copyright (c) 2020 wfnintr (gopher://wfnintr.net)
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# This work is free. You can redistribute it and/or modify it under the      
+# terms of the Do What The Fuck You Want To Public License, Version 2,       
+# as published by Sam Hocevar. See http://www.wtfpl.net/ for more details.   
+
+echo(){
+	printf "%s\n" "$@"
+}
+
+usage(){
+	printf "quik is a script for deploying vps' quickly\n\n"
+	printf "usage:\n"
+	printf "  quik <command>\n\n"
+	printf "available commands:\n"
+	printf "  auth\t\tauthenticate your digital ocean api key\n"
+	printf "  list\t\tlist options considering budget\n"
+	printf "  list -l\tlist all options\n"
+	printf "  deploy\tdeploy instance\n"
+	printf "  ls\t\tshow all instances\n"
+	printf "  ls-run\tshow running instances\n"
+	printf "  rm\t\tremove instance\n"
+	printf "  rm-all\tremove all instances\n\n"
+	printf "examples:\n"
+	printf "  quik deploy 1gb\t\tdeploy a single instance\n"
+	printf "  quik deploy 1gb 10\t\tdeploy 10 instances\n" 
+	printf "  quik list 1 1 1\t\tlist all options for 1USD, 1/hr, 1 instance\n" 
+#	echo "usage:	$pname list -l  (lists all options)"
+#	echo "	$pname list <max cost> <hours> [number of instances]"
+#	echo "	$pname deploy <slug> /path/to/sshpubkey [number of instances]"
+#	echo "	$pname rm <name or ip> [name2 or ip2] ..."
+	exit 1
+}
+
+findKey() {
+
+        echo "$1" | grep -q '[[:alnum:]]' && {
+                ssh_key="$1"
+                return 0
+        }
+
+        ssh_key="$(find ~/.ssh/ -type f -print 2>/dev/null| grep .*.pub | head -n1)"
+
+        echo "$ssh_key" | grep -q '[[:alnum:]]' && {
+                ssh_key="$ssh_key"
+                return 0
+        }
+	
+	[ -z "$ssh_key" ] && printf "no key provided\n" && exit 1 
+}
+
+
+doctl_auth(){
+	doctl auth init 2>&1 | grep -q 'Using token' 2>&1 > /dev/null && {
+		echo "Access token already found"
+		return 0
+	}
+
+	echo "$1" | grep -q '[[:alnum:]]' && {
+		KEY="$1"
+	} || {
+		printf 'Enter your API V2 access token: '
+		read "KEY" > /dev/null
+	}
+
+	doctl auth init -t "$KEY" 2>&1 > /dev/null
+
+	echo "$?" | grep -q '0' && {
+		mkdir -p ""${XDG_CONFIG_HOME:-$HOME/.config}/quik""
+		echo "$KEY" > ""${XDG_CONFIG_HOME:-$HOME/.config}"/quik/api"
+		echo "Access token validated!"
+	} || {
+		echo "Access token invalid"
+		return 1
+	}
+
+}
+
+list(){
+	list=$(doctl compute size list)
+	[ "$1" = "-l" ] && echo "$list" && exit
+	[ -z $1 ] || [ -z $2 ] && {
+		echo "usage:	$pname list -l  (lists all options)"
+		echo "	$pname list <max cost> <hours> <number of instances>"
+		exit 1
+	}
+	n=${3:-1}
+
+	echo "$list" | awk -v "m=$1" -v "h=$2" -v "i=$n" '
+		BEGIN {
+			print "ID/Name	Memory	vCPUs	Cost (total)"
+		}
+
+		/[[:space:]][0-9]/ && (i * ($6 * h)) < m {
+			print $1 "\t" $2 "\t" $3 "\t" (i * ($6 * h))
+		}
+	' | column -t -s "	"
+}
+
+list_all(){
+	printf '\n\n'
+	doctl compute droplet list --format Status,Name,Region,PublicIPv4,Memory,VCPUs,Disk
+}
+
+listrunning(){
+	doctl compute droplet list --format Status,Name,Region,PublicIPv4,Memory,VCPUs,Disk | awk '
+		BEGIN {
+			OFS="\t"
+			print "Status\tName\tRegion\tIPv4\tMem\tvCPUS\tDisk"
+		}
+
+		$1 == "active" {print $1, $2, $3, $4, $5, $6, $7}' | column -t -s "	"
+}
+
+
+deploy(){
+	[ -z "$1" ] && {
+		echo "usage:	$pname deploy <slug> [number of instances] [/path/to/sshpubkey]"
+		echo 'You must enter a size slug to deploy.'
+		exit 1
+	}
+	[ -z "$2" ] && instances=1 || instances=$2
+
+	doctl_auth
+	echo "$?" | grep -q "1" && {
+		exit
+	}
+
+	size_slug="$1"
+	printf 'importing your ssh key...%s\n' "$ssh_key"
+	findKey "$3"
+	doctl compute ssh-key import "$USER" --public-key-file "$ssh_key" > /dev/null 2>&1
+	ssh_key=$(doctl compute ssh-key list | grep "$USER" | awk '{print $3}')
+	region=nyc1 # list from `doctl compute region list` TODO: make this customizable
+	printf "deploying %d droplets in region %s, of size %s...\n" "${instances:-1}" "$region" "$size_slug"
+	image_id=$(doctl compute image list | awk '/void-linux-/{print $1}') # image is my repo only 
+	
+	
+	# i'm considering hard-coding the default image as voidlinux for now
+	# and also randomizing the defaults for region ~~and name (done)~~
+	# the less required options, the faster it will be to type...
+
+	for void in $(seq ${instances:-1})
+	do
+		(
+			name="voidlinux-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
+			doctl compute droplet create "$name" --image "$image_id" --size "$size_slug" --region "$region" --ssh-keys "$ssh_key" 1>/dev/null
+			printf '\ncreating instance %s' "$name" 
+		) &
+	done
+	sleep 5 #!was 20
+	list_all # !was listrunning
+	printf "\n\nPlease wait a few moments before logging in, to allow the sshd(s) to start, and ssh key(s) to be copied over.\n"
+}	
+
+delete(){
+        [ -z "$1" ] && echo "usage:	$pname rm <name or ip> [name2 or ip2] ..."
+	for nameip in $@
+	do
+		name=$(doctl compute droplet ls --format Name,PublicIPv4 | awk "\$1 == \"$nameip\" || \$2 == \"$nameip\""' {print $1}')
+		[ "$name" != "" ] && doctl compute droplet d "$name" -f || echo "$(tput bold)error:$(tput sgr0) no droplet has name/ip: $nameip"
+	done
+}
+
+rmall(){
+	list=$(doctl compute droplet ls --format Name | awk '$1 != "Name"')
+	for droplet in $list
+	do
+		echo "Deleting $droplet..."
+		doctl compute droplet d "$droplet" -f &
+	done
+}
+
+pname=$(basename $0)
+[ -z $1 ] && usage
+cmd="$1" && shift
+case "$cmd" in
+	list) list $@ ;;
+	-l) list -l;;
+	deploy) deploy $@ ;;
+	rm) delete $@ ;;
+	list-running|ls-run) listrunning $@ ;;
+	ls) list_all $@ ;;
+	rm-all) rmall ;;
+	auth) doctl_auth $@ ;;
+	*) usage ;;
+esac
