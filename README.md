@@ -45,23 +45,24 @@ Watch it deploy 10 instances:
 ```
 quik is a script for deploying vps' quickly
 
-usage:
+usage
   quik <command>
 
 available commands:
-  auth          authenticate your digital ocean api key
-  list          list options considering budget
-  list -l       list all options
-  deploy        deploy instance
-  ls            show all instances
-  ls-run        show running instances
-  rm            remove instance
-  rm-all        remove all instances
+  auth		authenticate your digital ocean api key
+  list		list options considering budget
+  list -l	list all options
+  distros	show all supported distros
+  deploy	deploy instance
+  ls		show all instances
+  ls-run	show running instances
+  rm		remove instance
+  rm-all	remove all instances
 
 examples:
-  quik deploy 1gb               deploy a single instance
-  quik deploy 1gb 10            deploy 10 instances
-  quik list 1 1 1               list all options for 1USD, 1/hr, 1 instance
+  quik list				list all options
+  quik deploy 1gb void-linux		deploy a single instance
+  quik deploy 1gb 10 void-linux		deploy 10 instances
 ```
 
 ---
