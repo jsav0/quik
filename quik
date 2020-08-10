@@ -139,8 +139,8 @@ deploy(){
 		printf "  $pname deploy <size-slug> <number of instances> <distro> [/path/to/sshpubkey]\n"
 		exit 1
 	}
-	#[ -z "$2" ] && instances=1 || instances=$2
 	size_slug="$1"
+	instances=$2
 
 	doctl_auth
 	echo "$?" | grep -q "1" && {

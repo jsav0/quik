@@ -37,7 +37,7 @@ ssh void@ip
 ```
 
 Watch it deploy 10 instances:  
-![watch it deploy 10 instances](http://wfnintr.net/images/demo_quik_is_quick.gif)
+![watch it deploy 10 instances](http://wfnintr.net/images/quik_demo_short.gif)
 
 
 ---
