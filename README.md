@@ -66,14 +66,16 @@ examples:
 
 ---
 
-## DO NOT CONSIDER ANY PLAYBOOKS IN THIS REPO AS FINAL
 
 # TODO:
 - There is a lot to do.
-- add self expiry option for instances (in progress) 
-- add regions for user selection or randomization (is this feasible?)
+- add self expiry (self-destruct) option for instances (in progress) 
+- add regions for user selection or randomization (done, but some regions are restricted, code commented out)
+- when an incorrect distro-name is passed, the script should call distro_list() and exit.
+- when an incorrect size-slug is passed, the script should call `list -l` and exit.
 
 
+## DO NOT CONSIDER ANY PLAYBOOKS IN THIS REPO AS FINAL
 I have intentions to build quik out with predefined drist playbooks for certain types of environments. So in that regard,  
 - playbooks for the following purposes:
 	- .onion generator (wfnintr/mkonions)
@@ -82,6 +84,8 @@ I have intentions to build quik out with predefined drist playbooks for certain 
 	- wireguard (wfnintr/wireguard-scripts)
 	- irc bots and daemons , (coming soon)
 	- more
+
+
 ---
 
 # About and Contributors 

@@ -22,22 +22,22 @@ echo(){
 }
 
 usage(){
-	printf "quik is a script for deploying vps' quickly\n\n"
-	printf "usage:\n"
+	printf "quik is a script for deploying vps' quickly\n\nusage\n"
 	printf "  quik <command>\n\n"
 	printf "available commands:\n"
 	printf "  auth\t\tauthenticate your digital ocean api key\n"
 	printf "  list\t\tlist options considering budget\n"
 	printf "  list -l\tlist all options\n"
+	printf "  distros\tshow all supported distros\n"
 	printf "  deploy\tdeploy instance\n"
 	printf "  ls\t\tshow all instances\n"
 	printf "  ls-run\tshow running instances\n"
 	printf "  rm\t\tremove instance\n"
 	printf "  rm-all\tremove all instances\n\n"
 	printf "examples:\n"
-	printf "  quik deploy 1gb\t\tdeploy a single instance\n"
-	printf "  quik deploy 1gb 10\t\tdeploy 10 instances\n" 
-	printf "  quik list 1 1 1\t\tlist all options for 1USD, 1/hr, 1 instance\n" 
+	printf "  quik deploy 1gb void-linux\t\tdeploy a single instance\n"
+	printf "  quik deploy 1gb 10 void-linux\t\tdeploy 10 instances\n" 
+	printf "  quik list 1 1 1\t\t\tlist all options for 1USD, 1/hr, 1 instance\n" 
 #	echo "usage:	$pname list -l  (lists all options)"
 #	echo "	$pname list <max cost> <hours> [number of instances]"
 #	echo "	$pname deploy <slug> /path/to/sshpubkey [number of instances]"
@@ -65,7 +65,7 @@ findKey() {
 
 doctl_auth(){
 	doctl auth init 2>&1 | grep -q 'Using token' 2>&1 > /dev/null && {
-		echo "Access token already found"
+		#echo "Access token already found"
 		return 0
 	}
 
@@ -93,8 +93,9 @@ list(){
 	list=$(doctl compute size list)
 	[ "$1" = "-l" ] && echo "$list" && exit
 	[ -z $1 ] || [ -z $2 ] && {
-		echo "usage:	$pname list -l  (lists all options)"
-		echo "	$pname list <max cost> <hours> <number of instances>"
+		printf "quik list shows all available options\n\nusage:\n"
+		printf "  $pname list -l  (lists all options)\n"
+		printf "  $pname list <max cost> <hours> <number of instances>\n"
 		exit 1
 	}
 	n=${3:-1}
@@ -111,7 +112,6 @@ list(){
 }
 
 list_all(){
-	printf '\n\n'
 	doctl compute droplet list --format Status,Name,Region,PublicIPv4,Memory,VCPUs,Disk
 }
 
@@ -125,44 +125,53 @@ listrunning(){
 		$1 == "active" {print $1, $2, $3, $4, $5, $6, $7}' | column -t -s "	"
 }
 
+list_distros(){
+	printf 'quik can deploy any of the following distros:\n'
+	printf '  debian-10-x64\n  centos-7-x64\n  ubuntu-18-04-x64\n  void-linux\n\n'
+	printf 'copy the full-name and deploy it like so:\n'
+	printf '  quik deploy 1gb 1 debian-10-x64\n'
+	exit 0
+}
 
 deploy(){
-	[ -z "$1" ] && {
-		echo "usage:	$pname deploy <slug> [number of instances] [/path/to/sshpubkey]"
-		echo 'You must enter a size slug to deploy.'
+	[ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] && {
+		printf "quik deploy - deploy an instance, quickly\n\nusage:\n"
+		printf "  $pname deploy <size-slug> <number of instances> <distro> [/path/to/sshpubkey]\n"
 		exit 1
 	}
-	[ -z "$2" ] && instances=1 || instances=$2
+	#[ -z "$2" ] && instances=1 || instances=$2
+	size_slug="$1"
 
 	doctl_auth
 	echo "$?" | grep -q "1" && {
 		exit
 	}
 
-	size_slug="$1"
 	printf 'importing your ssh key...%s\n' "$ssh_key"
-	findKey "$3"
+	findKey "$4"
 	doctl compute ssh-key import "$USER" --public-key-file "$ssh_key" > /dev/null 2>&1
 	ssh_key=$(doctl compute ssh-key list | grep "$USER" | awk '{print $3}')
-	region=nyc1 # list from `doctl compute region list` TODO: make this customizable
-	printf "deploying %d droplets in region %s, of size %s...\n" "${instances:-1}" "$region" "$size_slug"
-	image_id=$(doctl compute image list | awk '/void-linux-/{print $1}') # image is my repo only 
 	
-	
-	# i'm considering hard-coding the default image as voidlinux for now
-	# and also randomizing the defaults for region ~~and name (done)~~
-	# the less required options, the faster it will be to type...
+	printf "deploying %d instances of size %s...\n" "${instances:-1}" "$size_slug" # preferred: deploying num instances with 1vpcu, 1gb ram, 30gb hdd
+        image_id=$(doctl compute image list --public | awk "/$3/"'{print $1}')
+
 
 	for void in $(seq ${instances:-1})
 	do
 		(
-			name="voidlinux-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
+			#name="voidlinux-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
+			name="$3-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
+			
+			# this is better but some regions are restricted
+			# region=${REGION:-$(doctl compute region ls --no-header | sort -R | head -n1 | awk '{print $1}')}
+			region=nyc1
+			
 			doctl compute droplet create "$name" --image "$image_id" --size "$size_slug" --region "$region" --ssh-keys "$ssh_key" 1>/dev/null
-			printf '\ncreating instance %s' "$name" 
+			printf '\ncreating instance %s in region %s' "$name" "$region"
 		) &
 	done
 	sleep 5 #!was 20
-	list_all # !was listrunning
+	printf '\n\n' && list_all # !was listrunning
 	printf "\n\nPlease wait a few moments before logging in, to allow the sshd(s) to start, and ssh key(s) to be copied over.\n"
 }	
 
@@ -196,5 +205,6 @@ case "$cmd" in
 	ls) list_all $@ ;;
 	rm-all) rmall ;;
 	auth) doctl_auth $@ ;;
+	distros) list_distros ;;
 	*) usage ;;
 esac
