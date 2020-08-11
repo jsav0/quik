@@ -4,7 +4,7 @@
 sudo xbps-install -Suy
 
 # install common utils
-sudo xbps-install -y rsync curl libcurl-devel wget gcc make cmake git strace neovim screen tmux jq at
+sudo xbps-install -y rsync curl libcurl-devel wget gcc make cmake git strace neovim screen tmux jq fish-shell at doctl
 
 # self destruct
 # sudo ln -s /etc/sv/at /var/service

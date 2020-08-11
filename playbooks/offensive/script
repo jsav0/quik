@@ -1,10 +1,9 @@
 #!/bin/sh
 
-# update system
-sudo xbps-install -y nmap tcpdump termshark tor proxychains john thc-hydra net-snmp python3
+# install utils
+xbps-install -y nmap tcpdump termshark tor proxychains-ng john thc-hydra net-snmp python3
 
-sudo mkdir -p /usr/share/wordlists/seclists && {
-	sudo git clone https://github.com/danielmiessler/SecLists.git /usr/share/wordlists/seclists.git
-}
+# install seclists
+git clone https://github.com/danielmiessler/SecLists.git /usr/share/wordlists/seclists
 
 

@@ -3,7 +3,7 @@ include config.mk
 all: $(SERVERS)
 
 $(SERVERS):
-	drist -p $@
+	drist -p -s $@
 
 clean: 
 	find . -name "config.*" -exec rm -f {} \;

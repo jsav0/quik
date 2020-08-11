@@ -1,5 +1,4 @@
 # quik - mispelt script for deploying vps' quickly
-
 # see the source code for copyright and license details.
 
 BIN    = quik
