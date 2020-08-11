@@ -6,29 +6,28 @@ To obtain a Digital Ocean API Key, you can sign up with my [referral link](https
 ## Download:
 ~~source is NOT hosted on github. git it from here:~~  
 Ok, i put it on github also, but it may be outdated. Prefer my repo instead.
-
 ```
 git clone git://wfnintr.net/quik 
 ```
 
-i recommend you cloning to /opt/ and linking to $PATH like so:
+## Install:
+Use the provided makefile to install to /usr/local/bin/ 
 ```
-git clone git://wfnintr.net/quik /opt/quik && ln -s /opt/quik /usr/local/bin/
+sudo make install
 ```
+Or just copy `quik` to the `$PATH` of your choice.   
 
 ## Usage:
 **1. Pick an appropriate resource size (consider budget, run time, # of desired instances):**
 ```
-# list all possible options
-quik list -l
+quik list -l          # list all options
+quik list 1 1 1       # only show options that fit a budget of 1/USD, 1/hr 1/instance
 ```
 
 **2. Deploy**
 ```
-# deploy a single instance
-quik deploy 1gb 
-# deploy 10 instances
-quik deploy 1gb 10
+quik deploy 1gb 1 void-linux	# deploy 1 instance 
+quik deploy 1gb 10 void-linux	# deploy 10 instances
 ```
 
 **3. That's it.** Login to the running instances with  
@@ -39,6 +38,13 @@ ssh void@ip
 Watch it deploy 10 instances:  
 ![watch it deploy 10 instances](http://wfnintr.net/images/quik_demo_short.gif)
 
+quik currently supports deployment of the following distros:  
+```
+debian-10-x64		# user: root
+centos-7-x64		# user: root
+ubuntu-18-04-x64	# user: root
+void-linux		# user: void
+```
 
 ---
 
@@ -60,9 +66,9 @@ available commands:
   rm-all	remove all instances
 
 examples:
-  quik list				list all options
-  quik deploy 1gb void-linux		deploy a single instance
-  quik deploy 1gb 10 void-linux		deploy 10 instances
+  quik list -l				list all options
+  quik deploy 1gb 1 void-linux		deploy 1 instance running void linux
+  quik deploy 1gb 10 debian-10-x64	deploy 10 instances running debian-10-x64
 ```
 
 ---
@@ -72,8 +78,8 @@ examples:
 - There is a lot to do.
 - add self expiry (self-destruct) option for instances (in progress) 
 - add regions for user selection or randomization (done, but some regions are restricted, code commented out)
-- when an incorrect distro-name is passed, the script should call distro_list() and exit.
-- when an incorrect size-slug is passed, the script should call `list -l` and exit.
+- ~~when an incorrect distro-name is passed, the script should call distro_list() and exit.~~ done
+- ~~when an incorrect size-slug is passed, the script should call `list -l` and exit.~~ done
 
 
 ## DO NOT CONSIDER ANY PLAYBOOKS IN THIS REPO AS FINAL
