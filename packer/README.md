@@ -28,6 +28,7 @@ export IMAGE_REGION=""
 export DIGITALOCEAN_SPACES_SECRET_KEY=""
 export DIGITALOCEAN_SPACES_ACCESS_KEY=""
 export DIGITALOCEAN_API_TOKEN=""
+```
 
 4. Build
 ```
@@ -36,8 +37,7 @@ packer build templates/digitalocean-glibc64.json
 
 ---
 
-HAHAHAHA
-just kidding.. If you're like me and can't (or don't want to) spawn the kvm console, you must modify the digitalocean-glibc64.json packer template and set qemu to start in "headless" mode. 
+If you're like me and can't (or don't want to) spawn the kvm console, you must modify the digitalocean-glibc64.json packer template and set qemu to start in "headless" mode. 
 ```
 "type": "qemu",
 "headless": "true",
