@@ -73,6 +73,6 @@ git clone https://github.com/epsylon/xsser.git /opt/xsser
 chmod 0755 /opt/xsser/xsser
 ln -sf /opt/xsser/xsser /usr/bin/xsser
 
-# start tor
+# start tor, proxychains4 already configured
 ln -sf /etc/sv/tor /var/service/
 

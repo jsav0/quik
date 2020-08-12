@@ -130,6 +130,7 @@ list_distros(){
 }
 
 deploy(){
+	[ "$1" = "darkvoid" ] && darkvoid # do not remove, testing drist playbook
 	[ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] && {
 		printf "quik deploy - deploy an instance, quickly\n\nusage:\n"
 		printf "  $pname deploy <size-slug> <number of instances> <distro> [/path/to/sshpubkey]\n"
@@ -148,7 +149,7 @@ deploy(){
 		exit
 	}
 
-	printf 'importing your ssh key...%s\n' "$ssh_key"
+	printf 'importing your ssh key...\n'
 	findKey "$4"
 	doctl compute ssh-key import "$USER" --public-key-file "$ssh_key" > /dev/null 2>&1
 	ssh_key=$(doctl compute ssh-key list | grep "$USER" | awk '{print $3}')
@@ -163,7 +164,6 @@ deploy(){
 	for void in $(seq ${instances:-1})
 	do
 		(
-			#name="voidlinux-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
 			name="$3-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
 			
 			# this is better but some regions are restricted
@@ -200,6 +200,30 @@ rmall(){
 		doctl compute droplet d "$droplet" -f &
 	done
 }
+
+# do not change, testing
+darkvoid() {
+	printf 'importing your ssh key...\n'
+	findKey $1
+	ssh_key=$(doctl compute ssh-key list | grep "$USER" | awk '{print $3}')
+	printf 'creating instance...\n'
+	image_id=$(doctl compute image list | awk '/darkvoid/{print $1}')
+	doctl compute droplet create "darkvoid" --wait --image "$image_id" --size "s-2vcpu-4gb" --region "nyc1" --ssh-keys "$ssh_key" 1>/dev/null
+	printf 'initializating...\n' && sleep 5 
+	ip=$(doctl compute droplet list --format Name,PublicIPv4 | awk '/darkvoid/{print $2}')
+	printf '+++execute+++\n' && sleep 10
+	ssh-keyscan "$ip" >> ~/.ssh/known_hosts
+	cd playbooks/common
+	printf 'SERVERS = void@%s' "$ip" > config.mk
+	make
+	make clean
+	cd -
+	cd playbooks/offensive
+	printf 'SERVERS = void@%s' "$ip" > config.mk
+	make
+	make clean
+}
+
 
 pname=$(basename $0)
 [ -z $1 ] && usage

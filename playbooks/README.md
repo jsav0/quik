@@ -1,15 +1,21 @@
-
-## Usage
-1. Writing a new module is as simple as:
+## Usage:
+1. Writing a new module is as simple as:  
 ```
 mkdir -p module/files && make ln && cd <module>
-echo 'SERVERS = root@server' > config.mk
-echo 'this is a file' > /tmp/file
+printf 'this is a file\n' > /tmp/file
+printf '#!/bin/sh\necho this is a script\n' > script
 ```
 
-2. Deploy 
+2. deploying it is as simple as:
 ```
-cd <module> && make
+cd <module>
+echo 'SERVERS = user@server1 user@server2 user@server3' > config.mk
+make
 ```
 
-    (NOTE: replace words, and their brackets, when surrounded with <angle brackets>)
+---
+
+## How to parallelize:
+```
+make -j 3 # tell make to use 3 threads
+```
