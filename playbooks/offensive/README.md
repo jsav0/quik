@@ -2,12 +2,14 @@
 # Usage
 
 1. define target server(s) in config.mk
-	
-	echo 'SERVERS = user@server1 user@server2 user@server3' > config.mk
+```
+echo 'SERVERS = user@server1 user@server2 user@server3' > config.mk
+```
 
 2. execute
-	
-	make
+```	
+make
+```
 
 3. that's it.
 
