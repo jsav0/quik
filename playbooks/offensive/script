@@ -1,9 +1,77 @@
 #!/bin/sh
 
+## XBPS PACKAGES
+utils="\
+	curl \
+	rsync \
+	wget \
+	git \
+	openbsd-netcat \
+	gcc \
+	make \
+	pkg-config \
+	inetutils \
+	fierce \
+	nmap \
+	termshark \
+	tcpdump \
+	tor \
+	proxychains-ng \
+	john \
+	thc-hydra \
+	net-snmp \
+	python3 \
+	python3-pip \
+	gdb \
+	binwalk \
+	exiftool \
+	wfuzz \
+	gfuzz \
+	gobuster \
+	ffuf \
+	sqlmap \
+	"
+
 # install utils
-xbps-install -y nmap tcpdump termshark tor proxychains-ng john thc-hydra net-snmp python3
+xbps-install -uy $utils
+
+# install golang
+wget https://dl.google.com/go/go1.13.8.linux-amd64.tar.gz -O - | tar xzf - -C /usr/local/ 
+printf "\nexport PATH=$PATH:/usr/local/go/bin\nexport GOPATH=/opt/go\nexport GOBIN=$GOPATH/bin\n" >> /etc/profile
 
 # install seclists
 git clone https://github.com/danielmiessler/SecLists.git /usr/share/wordlists/seclists
 
+# install ciphey (https://github.com/Ciphey/Ciphey)
+pip3 install ciphey
+
+# install peda 
+git clone https://github.com/longld/peda.git /home/void/.peda
+cat > /home/void/.gdbinit <<- EOF
+	source ~/.peda/peda.py
+EOF
+
+# install pspy
+mkdir -p /usr/share/linux-bin
+git clone https://github.com/DominicBreuker/pspy.git /tmp/pspy
+cd /tmp/pspy && {
+	/bin/bash -lc "/usr/local/go/bin/go get"
+	/bin/bash -lc "GOARCH=386 /usr/local/go/bin/go build" # build 32bit binary
+	cp pspy /usr/share/linux-bin/pspy32
+      	chmod 0755 /usr/share/linux-bin/pspy32
+	/bin/bash -lc "GOARCH=amd64 /usr/local/go/bin/go build" # build 64bit binary
+	cp pspy /usr/share/linux-bin/pspy64
+	chmod 0755 /usr/share/linux-bin/pspy64
+	cd -
+    	rm -rf /tmp/pspy /opt/go/bin/pspy
+}
+
+# install xsser (https://github.com/epsylon/xsser.git)
+pip3 install pycurl bs4 geoip2 gobject cairocffi
+git clone https://github.com/epsylon/xsser.git /opt/xsser
+chmod 0755 /opt/xsser/xsser
+ln -sf /opt/xsser/xsser /usr/bin/xsser
+
+# start tor
+ln -sf /etc/sv/tor /var/service/
 
