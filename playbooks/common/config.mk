@@ -1,1 +1,1 @@
-SERVERS = void@206.81.3.131
+SERVERS = void@142.93.124.50

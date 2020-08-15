@@ -125,7 +125,7 @@ list_distros(){
 	printf 'quik can deploy any of the following distros:\n\n'
 	printf '  debian-10-x64\n  centos-7-x64\n  ubuntu-18-04-x64\n  void-linux\n\n'
 	printf 'example:\n'
-	printf '  quik deploy 1gb 1  running debian 10debian-10-x64\n'
+	printf '  quik deploy 1gb 1 debian-10-x64\n'
 	exit 0
 }
 
