@@ -8,10 +8,10 @@ BINDIR ?= ${PREFIX}/bin
 all:
 
 install: 
-	@echo installing executable to "${DESTDIR}${PREFIX}/bin"
-	@mkdir -p "${DESTDIR}${BINDIR}"
-	@install -m 0755 "${BIN}" "${DESTDIR}${BINDIR}/${BIN}"
+	@echo installing executable to "${BINDIR}/${BIN}"
+	@mkdir -p "${BINDIR}"
+	@install -m 0755 "${BIN}" "${BINDIR}/${BIN}"
 
 uninstall:
-	@echo removing executable file from "${DESTDIR}${PREFIX}/bin"
-	@rm -f "${DESTDIR}${BINDIR}/${BIN}"
+	@echo removing executable file from "${BINDIR}/${BIN}"
+	@rm -f "${BINDIR}/${BIN}"

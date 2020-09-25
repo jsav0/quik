@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "ignorepkg=sudo" | tee /usr/share/xbps.d/xbps.conf >/dev/null
+xbps-install -y opendoas
+mv /tmp/sudo.sh /bin/sudo
+chmod +x /bin/sudo
+xbps-remove -y sudo

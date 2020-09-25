@@ -100,7 +100,6 @@ examples:
 quik started as my idea (jsavage) for deploying void linux instances quickly onto cloud infrastructure and automating the deployment of configurations to those instances.
 It quickly evolved into a fully capable script after being passed back and forth with others over irc. And for that, I thank my friends for being a part of it.   
 
-- `wfnintr` 
 - `haydenh`
 - `Evelyn Martin`
 
@@ -108,4 +107,4 @@ More are welcome.
 
 Join us in:  
 - **irc.nebulacentre.net** [channel *#general*]
-- **hlirc.haydenvh.com** [channel *#quik*]
+- **irc.hlirc.net** [channel *#quik*]
