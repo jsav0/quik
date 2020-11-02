@@ -6,8 +6,9 @@ git clone https://github.com/jsav0/quik
 ```
 
 ## Dependencies:
-- drist : drist is a tool to configure remote servers in an Unix way. `git clone git://bitreich.org/drist && sudo make install`
-- doctl : official cli for the DigitalOcean API
+- `drist` : drist is a tool to configure remote servers in an Unix way.
+  - `git clone git://bitreich.org/drist && sudo make install`
+- `doctl` : official cli for the DigitalOcean API
 
 ## Install:
 Use the provided makefile to install to /usr/local/bin/ 
@@ -79,9 +80,9 @@ examples:
 - add regions for user selection or randomization (done, but some regions are restricted, code commented out)
 
 ## PLAYBOOKS
-ALL PLAYBOOKS HAVE BEEN MOVED TO: jsav0/drist-playbooks
+ALL PLAYBOOKS HAVE BEEN MOVED TO: jsav0/drist-playbooks  
 They may be coupled with quik to automate full deployments
-- playbooks for the following purposes:
+- example playbooks for the following purposes:
 	- offensive hacking (wfnintr/darkvoid) 
 	- .onion generator (wfnintr/mkonions)
 	- tor relay (wfnintr/tor-bridge)
