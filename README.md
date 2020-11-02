@@ -1,6 +1,4 @@
 # quik - mispelt script for deploying vps' quikly
-<small> (wrapper around doctl)
-
 ## Download:
 ```
 git clone https://github.com/jsav0/quik
