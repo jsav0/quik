@@ -1,14 +1,13 @@
 # quik - mispelt script for deploying vps' quikly
 
-#### Digital Ocean API Key
-To obtain a Digital Ocean API Key, you can sign up with my [referral link](https://m.do.co/c/c5ace8d7755e). (free $100 credit)
-
 ## Download:
-~~source is NOT hosted on github. git it from here:~~  
-Ok, i put it on github also, but it may be outdated. Prefer my repo instead.
 ```
-git clone git://wfnintr.net/quik 
+git clone https://github.com/jsav0/quik
 ```
+
+## Dependencies:
+- drist : drist is a tool to configure remote servers in an Unix way. `git clone git://bitreich.org/drist && sudo make install`
+- doctl : official cli for the DigitalOcean API
 
 ## Install:
 Use the provided makefile to install to /usr/local/bin/ 
@@ -21,7 +20,7 @@ Or just copy `quik` to the `$PATH` of your choice.
 **1. Pick an appropriate resource size (consider budget, run time, # of desired instances):**
 ```
 quik list -l          # list all options
-quik list 1 1 1       # only show options that fit a budget of 1/USD, 1/hr 1/instance
+quik list 1 1 1       # <price> <runtime> <count> only show options that fit a budget of 1/USD, 1/hr 1/instance
 ```
 
 **2. Deploy**
@@ -32,7 +31,7 @@ quik deploy 1gb 10 void-linux	# deploy 10 instances
 
 **3. That's it.** Login to the running instances with  
 ```
-ssh void@ip
+ssh root@ip
 ```
 
 Watch it deploy 10 instances:  
@@ -75,15 +74,13 @@ examples:
 ---
 
 
-# TODO:
-- There is a lot to do.
-- add self expiry (self-destruct) option for instances (in progress) 
+## TODO:
+- add self expiry (self-destruct) option for instances (in progress, see self-destruct playbook) 
 - add regions for user selection or randomization (done, but some regions are restricted, code commented out)
-- ~~when an incorrect distro-name is passed, the script should call distro_list() and exit.~~ done
-- ~~when an incorrect size-slug is passed, the script should call `list -l` and exit.~~ done
 
 ## PLAYBOOKS
-*DO NOT CONSIDER ANY PLAYBOOKS IN THIS REPO AS FINAL , although some probably are*
+ALL PLAYBOOKS HAVE BEEN MOVED TO: jsav0/drist-playbooks
+They may be coupled with quik to automate full deployments
 - playbooks for the following purposes:
 	- offensive hacking (wfnintr/darkvoid) 
 	- .onion generator (wfnintr/mkonions)
@@ -91,14 +88,15 @@ examples:
 	- wireguard (wfnintr/wireguard-scripts)
 	- xinetd (httpd, gopher, git)
 	- irc bots and daemons 
+	- target recon
+	- subdomain enumeration
+	- port scanning in parallel
 	- more
 
 
 ---
 
-# About and Contributors 
-quik started as my idea (jsavage) for deploying void linux instances quickly onto cloud infrastructure and automating the deployment of configurations to those instances.
-It quickly evolved into a fully capable script after being passed back and forth with others over irc. And for that, I thank my friends for being a part of it.   
+## Contributors 
 
 - `haydenh`
 - `Evelyn Martin`
@@ -107,4 +105,8 @@ More are welcome.
 
 Join us in:  
 - **irc.nebulacentre.net** [channel *#general*]
-- **irc.hlirc.net** [channel *#quik*]
+- **irc.hlirc.net** [channel *#hlircnet*]
+
+
+#### Digital Ocean API Key
+To obtain a Digital Ocean API Key, you can sign up with my [referral link](https://m.do.co/c/c5ace8d7755e). (free $100 credit)
