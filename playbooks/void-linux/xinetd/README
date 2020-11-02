@@ -1,9 +1,0 @@
-Place scripts in 
-	files/tmp/xinetd/<servicename>.sh
-If a service requires command line arguments, place them in:
-	files/tmp/xinetd/<servicename>_args
-
-Where <servicename> is the name of a service listed in /etc/services (eg, http
-for 80, ssh for 22)
-
-There is an example for http.
