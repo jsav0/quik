@@ -130,7 +130,7 @@ list_distros(){
 }
 
 deploy(){
-	[ "$1" = "darkvoid" ] && darkvoid # do not remove, testing drist playbook
+#	[ "$1" = "darkvoid" ] && darkvoid # do not remove, testing drist playbook
 	[ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] && {
 		printf "quik deploy - deploy an instance, quickly\n\nusage:\n"
 		printf "  $pname deploy <size-slug> <number of instances> <distro> [/path/to/sshpubkey]\n"
