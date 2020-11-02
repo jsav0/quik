@@ -1,4 +1,5 @@
 # quik - mispelt script for deploying vps' quikly
+<small> (wrapper around doctl)
 
 ## Download:
 ```
