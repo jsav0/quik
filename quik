@@ -166,9 +166,9 @@ deploy(){
 		(
 			name="$3-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
 			
-			# this is better but some regions are restricted
-			# region=${REGION:-$(doctl compute region ls --no-header | sort -R | head -n1 | awk '{print $1}')}
-			region=nyc1
+			region=nyc3
+			# uncomment below for random region instead
+			# doctl compute region ls --no-header | grep true | awk '{print $1}' | sort -r | head -n1
 			
 			doctl compute droplet create "$name" --image "$image_id" --size "$size_slug" --region "$region" --ssh-keys "$ssh_key" 1>/dev/null
 			printf '\ncreating instance %s in region %s' "$name" "$region"
