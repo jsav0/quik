@@ -17,6 +17,8 @@
 # terms of the Do What The Fuck You Want To Public License, Version 2,       
 # as published by Sam Hocevar. See http://www.wtfpl.net/ for more details.   
 
+export LC_CTYPE=C
+
 echo(){
 	printf "%s\n" "$@"
 }
@@ -164,9 +166,9 @@ deploy(){
 	for void in $(seq ${instances:-1})
 	do
 		(
-			name="$3-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -zc-10)"
+			name="$3-$(head -c 1000 /dev/urandom | tr -dc 'A-Za-z0-9' | head -n 1 | cut -c-10 | tr -d '\n')"
 			
-			region=nyc3
+			region=nyc1
 			# uncomment below for random region instead
 			# doctl compute region ls --no-header | grep true | awk '{print $1}' | sort -r | head -n1
 			
