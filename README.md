@@ -7,7 +7,8 @@ git clone https://github.com/jsav0/quik
 ## Dependencies:
 - `drist` : drist is a tool to configure remote servers in an Unix way.
   - `git clone git://bitreich.org/drist && sudo make install`
-- `doctl` : official cli for the DigitalOcean API
+- `doctl` : official cli for the Digital Ocean API
+- `vultr` : official cli for the Vultr API
 
 ## Install:
 Use the provided makefile to install to /usr/local/bin/ 
@@ -16,59 +17,34 @@ sudo make install
 ```
 Or just copy `quik` to the `$PATH` of your choice.   
 
-## Usage:
-**1. Pick an appropriate resource size (consider budget, run time, # of desired instances):**
-```
-quik list -l          # list all options
-quik list 1 1 1       # <price> <runtime> <count> only show options that fit a budget of 1/USD, 1/hr 1/instance
-```
-
-**2. Deploy**
-```
-quik deploy 1gb 1 void-linux	# deploy 1 instance 
-quik deploy 1gb 10 void-linux	# deploy 10 instances
-```
-
-**3. That's it.** Login to the running instances with  
-```
-ssh root@ip
-```
-
-Watch it deploy 10 instances:  
-![watch it deploy 10 instances](http://wfnintr.net/images/quik_demo_short.gif)
-
-quik currently supports deployment of the following distros:  
-( others can be deployed easily with a minor adjustment to the source. )
-```
-debian-10-x64		# user: root
-centos-7-x64		# user: root
-ubuntu-18-04-x64	# user: root
-void-linux		# user: void
-```
+quik currently supports deployment with the following VPS providers:
+- Digital Ocean using utility `doctl`, auth via `$DO_TOKEN`
+- Vultr using utility `vultr`, auth via `VULTR_API_KEY`
 
 ---
 
 ```
 quik is a script for deploying vps' quickly
 
-usage
+usage:
   quik <command>
+  quik <provider> <command> <options>
 
-available commands:
-  auth		authenticate your digital ocean api key
-  list		list options considering budget
-  list -l	list all options
-  distros	show all supported distros
-  deploy	deploy instance
-  ls		show all instances
-  ls-run	show running instances
-  rm		remove instance
-  rm-all	remove all instances
+quik commands:
+  ls		list servers
+  rm		remove servers
+
+providers:
+  doctl		Digtal Ocean
+  vultr		Vultr
+
+provider commands:
+  deploy	deploy servers
+  rm		remove servers
+  ls		list servers
 
 examples:
-  quik list -l				list all options
-  quik deploy 1gb 1 void-linux		deploy 1 instance running void linux
-  quik deploy 1gb 10 debian-10-x64	deploy 10 instances running debian-10-x64
+  quik doctl deploy 1gb 10 void-linux	deploy 10 instances running void linux
 ```
 
 ---
@@ -80,7 +56,8 @@ examples:
 
 ## PLAYBOOKS
 ALL PLAYBOOKS HAVE BEEN MOVED TO: jsav0/drist-playbooks  
-They may be coupled with quik to automate full deployments
+They may be coupled with quik to automate full deployments  
+Some playbooks require my modified version of `drist` to copy the files back to the local machine.  
 - example playbooks for the following purposes:
 	- offensive hacking (wfnintr/darkvoid) 
 	- .onion generator (wfnintr/mkonions)
