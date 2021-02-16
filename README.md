@@ -1,4 +1,4 @@
-# quik - mispelt script for deploying vps' quickly using Digital Ocean
+# quik - mispelt script for deploying vps' quickly
 ## Download:
 ```
 git clone https://github.com/jsav0/quik
