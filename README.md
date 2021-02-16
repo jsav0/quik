@@ -18,8 +18,8 @@ sudo make install
 Or just copy `quik` to the `$PATH` of your choice.   
 
 quik currently supports deployment with the following VPS providers:
-- Digital Ocean using utility `doctl`, auth via `$DO_TOKEN`
-- Vultr using utility `vultr`, auth via `VULTR_API_KEY`
+- Digital Ocean using doctl`, auth via `$DO_TOKEN`
+- Vultr using vultr`, auth via `VULTR_API_KEY`
 
 ---
 
