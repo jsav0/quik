@@ -5,10 +5,13 @@ git clone https://github.com/jsav0/quik
 ```
 
 ## Dependencies:
-- `drist` : drist is a tool to configure remote servers in an Unix way.
-  - `git clone git://bitreich.org/drist && sudo make install`
 - `doctl` : official cli for the Digital Ocean API
 - `vultr` : official cli for the Vultr API
+
+If you intend to couple quik with my playbooks, drist is needed  
+- `drist` : drist is a tool to configure remote servers in an Unix way.
+  - `git clone git://bitreich.org/drist && sudo make install`
+
 
 ## Install:
 Use the provided makefile to install to /usr/local/bin/ 
